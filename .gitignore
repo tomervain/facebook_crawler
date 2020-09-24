@@ -1,6 +1,6 @@
 /.vscode
 /facebook_crawler
-test.py
 configuration.json
 pages.json
 __pycache__/
+test.py
