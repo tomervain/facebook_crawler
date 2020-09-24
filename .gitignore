@@ -1,3 +1,6 @@
 /.vscode
 /facebook_crawler
-/.gitignore
+test.py
+configuration.json
+pages.json
+__pycache__/

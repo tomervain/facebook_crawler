@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
 
+
 def chromedriver(profile=1, headless=True, images=False, sandbox=True) -> WebDriver:
     """Creates a new Chromedriver session for Selenium
 
@@ -15,8 +16,9 @@ def chromedriver(profile=1, headless=True, images=False, sandbox=True) -> WebDri
     Returns:
         WebDriver: Selenium webdriver object
     """
-    driver_path = '/home/tomer/Temp/chromedriver' # TODO: replace with enviroment variable
-    chrome_path = Path('/home/tomer/.config/google-chrome/Default') # TODO: replace with enviroment variable
+    driver_path = '/home/tomer/Temp/chromedriver'  # TODO: replace with enviroment variable
+    # TODO: replace with enviroment variable
+    chrome_path = Path('/home/tomer/.config/google-chrome/Default')
     profile_path = chrome_path / f'Profile {profile}'
     image_opt = 1 if images else 2
     driver_prefs = {
@@ -37,7 +39,7 @@ def chromedriver(profile=1, headless=True, images=False, sandbox=True) -> WebDri
         options.add_argument("--no-sandbox")
     if headless:
         options.add_argument("--headless")
-    
+
     # add driver's preferences and disable verbose logging
     options.add_experimental_option("prefs", driver_prefs)
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -46,11 +48,18 @@ def chromedriver(profile=1, headless=True, images=False, sandbox=True) -> WebDri
 
 
 def facebook_login(driver: WebDriver, email: str, password: str):
+    """Login to Facebook using account's email and password
 
+    Args:
+        driver (WebDriver): The webdriver used for login process
+        email (str): Facebook account's email
+        password (str): Facebook account's password
+    """
     driver.get('http://facebook.com')
-    driver.find_element_by_name('email').send_keys(email)
-    driver.find_element_by_name('pass').send_keys(password)
-    driver.find_element_by_name('login').click()
-    print('successfuly logged in')
-
-    print('no login was issued')
+    if 'log in' in driver.title.lower():
+        driver.find_element_by_name('email').send_keys(email)
+        driver.find_element_by_name('pass').send_keys(password)
+        driver.find_element_by_name('login').click()
+        print(f'logged in as {email}')
+    else:
+        print('no login was issued')
