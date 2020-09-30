@@ -16,8 +16,8 @@ def chromedriver(profile=1, headless=True, images=False, sandbox=True) -> WebDri
     Returns:
         WebDriver: Selenium webdriver object
     """
-    driver_path = '/home/tomer/Temp/chromedriver'  # TODO: replace with enviroment variable
-    # TODO: replace with enviroment variable
+    # TODO: replace driver and profile paths with enviroment variable
+    driver_path = '/home/tomer/Temp/chromedriver'
     chrome_path = Path('/home/tomer/.config/google-chrome/Default')
     profile_path = chrome_path / f'Profile {profile}'
     image_opt = 1 if images else 2
