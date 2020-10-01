@@ -24,6 +24,7 @@ class ScrapePostsFromPage:
     page: Page
     time: int = 0
     scraped_posts: List[Post] = field(default_factory=list)
+    include_reactions: bool = True
 
     @staticmethod
     def _posts_are_visible():
@@ -56,10 +57,13 @@ class ScrapePostsFromPage:
 
         return list(filter(self._is_live_now, posts))
 
-    def run(self):
-        """runs the task and save scraped posts in list"""
-        # TODO: change threshold setting from hard-coded to parameter
-        date_threshold = date.today() - timedelta(3)
+    def run(self, threshold: int = 3):
+        """runs the task and save scraped posts in list
+
+        Args:
+            threshold (int, optional): Amount of days a post goes back. Defaults to 3.
+        """
+        date_threshold = date.today() - timedelta(threshold)
         last_date = date.today()
         self.driver.get(FACEBOOK_PAGE_POSTS % self.page.username)
 
@@ -72,7 +76,8 @@ class ScrapePostsFromPage:
         posts = self._filter_posts(posts, date_threshold)
         for post in posts:
             webdriver.ActionChains(self.driver).move_to_element(post).perform()
-            post_obj = Post(self.driver, post, False,
-                            self.page.username, self.page.fullname)
-            print(post_obj)
-            self.scraped_posts.append(post_obj)
+            self.scraped_posts.append(Post(
+                driver=self.driver,
+                element=post,
+                pagename=self.page.fullname,
+                include_reactions=self.include_reactions))

@@ -24,5 +24,7 @@ post_loc = {
     "MORE_EXPOSE": "span[data-sigil='more'] a",
     "MORE_LINK_DIV": "div[class='text_exposed_show'] > p > a",
     "MORE_LINK_SPAN": "span[class='text_exposed_show'] a",
-    "ATAGS": "p > a"
+    "ATAGS": "p > a",
+    "REACTIONS": "div._1w1k",
+    "RCOUNTERS": "span[class='_5p-9 _5p-l']"
 }

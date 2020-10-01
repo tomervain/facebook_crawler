@@ -8,6 +8,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 
 from lib.config.locators import post_loc as pl
+from lib.config.strings import POST_REACTIONS
 
 
 @dataclass
@@ -15,17 +16,12 @@ class Post:
     """Holds data of scraped Facebook post."""
     driver: InitVar[WebDriver]
     element: InitVar[WebElement]
-    parse_reactions: InitVar[bool]
-    username: InitVar[str]
     pagename: str
-    type: str = field(init=False)
+    include_reactions: InitVar[bool]
     post_id: int = field(init=False)
     datetime: str = field(init=False)
-    comments: int = field(init=False)
-    shares: int = field(init=False)
-    content: str = field(init=False)
 
-    def __post_init__(self, driver, element, parse_reactions, username):
+    def __post_init__(self, driver, element, include_reactions):
         self.type = self._parse_type(element)
         self.post_id = self._parse_id(element)
         self.datetime = self._parse_datetime(element)
@@ -37,8 +33,9 @@ class Post:
         self.text = text
         self.mentions = mentions
 
-        # reactions = self._parse_reactions(driver, element, username) if parse_reactions else None
-        # self.reactions = reactions
+        if include_reactions:
+            self.reactions = self._parse_reactions(driver, element, self.post_id)
+
 
     @staticmethod
     def _expose_more_is_clickable():
@@ -160,6 +157,28 @@ class Post:
         return '\n'.join(post_text), mentions
 
     @staticmethod
-    def _parse_reactions(driver: WebDriver, element: WebElement, username: str) -> dict:
-        # TODO: implement the reaction page parsing method
-        pass
+    def _parse_reactions(driver: WebDriver, element: WebElement, post_id: int) -> dict:
+        reactions_display = element.find_elements_by_css_selector(pl['REACTIONS'])
+        if not reactions_display:
+            return None
+        reactions = {}
+        original_window = driver.current_window_handle
+        driver.execute_script("window.open('');") # open new tab
+        driver.switch_to.window(driver.window_handles[1])
+        driver.get(POST_REACTIONS % post_id)
+
+        rcounters = driver.find_elements_by_css_selector(pl['RCOUNTERS'])
+        for counter in rcounters:
+            # reaction can be taken from last word of aria-label
+            # example: "120 people reacted with Love" => "Love"
+            label = counter.get_attribute('aria-label').split()[-1].lower()
+            count_str = counter.text.upper()
+            if count_str[-1] == 'K':
+                count = int(float(count_str[:-1]) * 1000)
+            else:
+                count = int(count_str)
+            reactions[label] = count
+
+        driver.close() # close tab
+        driver.switch_to.window(original_window)
+        return reactions
