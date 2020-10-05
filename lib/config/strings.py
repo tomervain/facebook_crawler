@@ -6,3 +6,13 @@ POST_REACTIONS = "https://m.facebook.com/ufi/reaction/profile/browser/?ft_ent_id
 
 # expected conditions timout messages
 WTO_POSTS_VISIBLE = "Not all Post elements were visible"
+
+# js scripts
+CLEAR_ITEMS = """
+items = document.querySelectorAll("%s")
+for(item of items) {
+    item.parentNode.removeChild(item)
+    item = null
+}
+items = null
+"""

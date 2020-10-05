@@ -63,6 +63,7 @@ class ScrapePostsFromPage:
         Args:
             threshold (int, optional): Amount of days a post goes back. Defaults to 3.
         """
+        self.time = time.perf_counter()
         date_threshold = date.today() - timedelta(threshold)
         last_date = date.today()
         self.driver.get(FACEBOOK_PAGE_POSTS % self.page.username)
@@ -81,3 +82,5 @@ class ScrapePostsFromPage:
                 element=post,
                 pagename=self.page.fullname,
                 include_reactions=self.include_reactions))
+
+        self.time = time.perf_counter() - self.time

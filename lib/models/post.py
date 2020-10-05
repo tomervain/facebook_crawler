@@ -38,10 +38,6 @@ class Post:
 
 
     @staticmethod
-    def _expose_more_is_clickable():
-        return ec.element_to_be_clickable((By.CSS_SELECTOR, pl['MORE_EXPOSE']))
-
-    @staticmethod
     def _parse_type(element: WebElement) -> str:
         header = element.find_element_by_css_selector(pl['HEADER'])
         return 'live post' if 'live' in header.text.lower() else 'post'

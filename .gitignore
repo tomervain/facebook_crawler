@@ -2,6 +2,7 @@
 /facebook_crawler
 configuration.json
 posts_output.json
+comments_output.json
 pages.json
 __pycache__/
 test.py
