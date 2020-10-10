@@ -3,12 +3,11 @@ import time
 from dataclasses import InitVar, dataclass, field
 from datetime import datetime
 from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as ec
 
 from lib.config.locators import post_loc as pl
 from lib.config.strings import POST_REACTIONS
+from lib.models.page import Page
 
 
 @dataclass
@@ -16,12 +15,14 @@ class Post:
     """Holds data of scraped Facebook post."""
     driver: InitVar[WebDriver]
     element: InitVar[WebElement]
-    pagename: str
+    page: InitVar[Page]
     include_reactions: InitVar[bool]
     post_id: int = field(init=False)
     datetime: str = field(init=False)
 
-    def __post_init__(self, driver, element, include_reactions):
+    def __post_init__(self, driver, element, page, include_reactions):
+        self.pagename = page.fullname
+        self.username = page.username
         self.type = self._parse_type(element)
         self.post_id = self._parse_id(element)
         self.datetime = self._parse_datetime(element)
@@ -45,7 +46,7 @@ class Post:
     @staticmethod
     def _parse_id(element: WebElement) -> int:
         data = element.get_attribute('data-store')
-        post_id = re.search(r'(?<=\\\"post_id\\\":).*?(?=,)', data)
+        post_id = re.search(r'(?<=post_id\.).*?(?=:)', data)
         return int(post_id.group())
 
     @staticmethod

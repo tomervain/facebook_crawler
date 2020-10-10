@@ -1,11 +1,7 @@
 import re
-import time
 from dataclasses import InitVar, dataclass, field
 from datetime import datetime
-from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as ec
 
 from lib.config.locators import comment_loc as cl
 
@@ -18,6 +14,7 @@ class Comment:
     comment_id: int = field(init=False)
     commenter_id: int = field(init=False)
     commenter_name: str = field(init=False)
+    date_time: str = field(init=False)
 
     def __post_init__(self, element):
         self.comment_id = self._parse_comment_id(element)
@@ -25,6 +22,19 @@ class Comment:
         self.commenter_name = self._parse_name(element)
         self.text, self.links = self._parse_text(element, self.commenter_name)
         self.content = self._parse_content(element)
+
+    def parse_datetime(self, cid_date_dict: dict, timestamp: float):
+        """parsing comment's datetime base on dictionay or estimation
+
+        Args:
+            cid_date_dict (dict): dictionary of datetime samples
+            timestamp (float): predicted timestamp to use if not found in dictionary
+        """
+        if self.comment_id in cid_date_dict.keys():
+            dtime = cid_date_dict[self.comment_id]
+        else:
+            dtime = datetime.fromtimestamp(timestamp)
+        self.date_time = dtime.strftime("%Y-%m-%d %H:%M:%S")
 
     @staticmethod
     def _parse_comment_id(element: WebElement) -> int:
@@ -57,12 +67,16 @@ class Comment:
 
     @staticmethod
     def _parse_content(element: WebElement) -> dict:
-        # lambda functions for content link encoding
-        encode_gif = lambda url: url.replace('%3A', ':').replace('%2F', '/')\
-                .replace('%3F', '?').replace('%3D', '=').replace('%26', '&')
-        encode_sticker = lambda url: url.replace('\3a ', ':')\
-            .replace('\3d ', '=').replace('\26 ', '&')
-        encode_image = lambda url: url.replace(r'\/','/')
+        # functions for content link encoding
+        def encode_gif(url):
+            return url.replace('%3A', ':').replace('%2F', '/').replace('%3F', '?')\
+                .replace('%3D', '=').replace('%26', '&')
+
+        def encode_sticker(url):
+            return url.replace('\3a ', ':').replace('\3d ', '=').replace('\26 ', '&')
+
+        def encode_image(url):
+            return url.replace(r'\/', '/')
 
         # possible locators
         gif = element.find_elements_by_css_selector(cl['GIF'])
@@ -83,7 +97,8 @@ class Comment:
             clink = image[0].get_attribute('data-store')
             clabel = image[0].get_attribute('label')
             if clabel:
-                clabel = re.findall(r'(?<=text that says [\"\']).*?(?=[\"\'])', clabel)
+                clabel = re.findall(
+                    r'(?<=text that says [\"\']).*?(?=[\"\'])', clabel)
                 clabel = clabel[0] if clabel else None
             clink = re.search(r'(?<={\"imgsrc\":\").*?(?=\"})', clink).group()
             return {'type': 'Image', 'link': encode_image(clink), 'label': clabel}

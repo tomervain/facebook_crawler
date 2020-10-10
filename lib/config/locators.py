@@ -31,7 +31,20 @@ post_loc = {
 
 comments_page_loc = {
     "MORE_COMMENTS": "div[id*='see_next'] a",
-    "COMMENTS": "div[class='_333v _45kb'] > div[class*='_2a_i']",
+    "COMMENTS_SECTION": "div[class='_333v _45kb']",
+    "COMMENTS": "div[class='_333v _45kb'] > div[class*='_2a_i']"
+}
+
+comments_regular_loc = {
+    "OTHERS": "div[class='d2edcug0 oh7imozk abvwweq7 ejjq64ki']",
+    "COMMENTS": "div[class='cwj9ozl2 tvmbv18p'] > ul > li",
+    "COMMENT_CONTENT": "div[class*='cxmmr5t8 oygrvhab hcukyx3x c1et5uql'],\
+        li video,div[class*='bp9cbjyn hn33210v fni8adji hgaippwi'],\
+            div[class*='l6v480f0 maa8sdkg s1tcr66n aypy0576']",
+    "SHOW_MORE": "div[class*='bkfpd7mw'] div[class*='jklb3kyz'] div[role='button'] span",
+    "ANCHOR": "div[role='article']",
+    "TIMETAG": "a[class*='knj5qynh']",
+    "TOOLTIP": "span[role='tooltip']"
 }
 
 comment_loc = {

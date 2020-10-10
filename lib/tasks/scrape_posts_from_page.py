@@ -80,7 +80,7 @@ class ScrapePostsFromPage:
             self.scraped_posts.append(Post(
                 driver=self.driver,
                 element=post,
-                pagename=self.page.fullname,
+                page=self.page,
                 include_reactions=self.include_reactions))
 
         self.time = time.perf_counter() - self.time

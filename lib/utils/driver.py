@@ -1,3 +1,5 @@
+import os
+import logging
 from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -16,9 +18,8 @@ def chromedriver(profile=1, headless=True, images=False, sandbox=True) -> WebDri
     Returns:
         WebDriver: Selenium webdriver object
     """
-    # TODO: replace driver and profile paths with enviroment variable
-    driver_path = '/home/tomer/Temp/chromedriver'
-    chrome_path = Path('/home/tomer/.config/google-chrome/Default')
+    driver_path = os.environ.get('CHROMEDRIVER')
+    chrome_path = Path(os.environ.get('CHROMEPROFILE'))
     profile_path = chrome_path / f'Profile {profile}'
     image_opt = 1 if images else 2
     driver_prefs = {
@@ -60,6 +61,6 @@ def facebook_login(driver: WebDriver, email: str, password: str):
         driver.find_element_by_name('email').send_keys(email)
         driver.find_element_by_name('pass').send_keys(password)
         driver.find_element_by_name('login').click()
-        print(f'logged in as {email}')
+        logging.info('logged in as %s', email)
     else:
-        print('no login was issued')
+        logging.info('already logged in, no login was issued')
