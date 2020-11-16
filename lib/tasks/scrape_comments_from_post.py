@@ -127,6 +127,7 @@ class ScrapeCommentsFromPost:
         wait = WebDriverWait(self.driver, 30)
         wait.until(self._visibility_of_all_comments())
         self.driver.execute_script(CLEAR_ITEMS % crl['COMMENT_CONTENT'])
+        self.driver.execute_script(CLEAR_ITEMS % crl['REACTION_TAGS'])
         comments = self.driver.find_elements_by_css_selector(crl['COMMENTS'])
         for comment in comments:
             href, tooltip = self._data_from_timetag(comment)

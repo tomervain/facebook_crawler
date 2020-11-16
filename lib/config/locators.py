@@ -5,24 +5,28 @@ facebook_page_loc = {
 
 posts_page_loc = {
     "POSTS": "div._3drp > article",
-    "POST_HEADER": "div._4g34 h3"
+    "POST_HEADER": "div._4g34 h3",
+    "SIGN_HEADER": "div._4b-b"
 }
 
 post_loc = {
     "ALBUM": "div[class='_26ii _-_b']",
     "ATAGS": "p > a",
-    "COMMENTS": "div._1fnt span[data-sigil='comments-token']",
+    # "COMMENTS": "div._1fnt span[data-sigil='comments-token']",
+    "COMMENTS": "div[class='_2og4 slimLike _15kj _34qc _4b45'] span[class='cmt_def _28wy']",
     "CONTENT": "div[class='_5rgu _7dc9 _27x0']",
     "HEADER": "div._4g34 h3",
     "LINK": "div[class='_2zi_ _2zj0']",
     "MORE_EXPOSE": "span[data-sigil='more'] a",
     "MORE_LINK_DIV": "div[class='text_exposed_show'] > p > a",
     "MORE_LINK_SPAN": "span[class='text_exposed_show'] a",
-    "SHARES": "div._1fnt span:not([data-sigil])",
+    # "SHARES": "div._1fnt span:not([data-sigil])",
+    "SHARES": "div[class='_2og4 slimLike _15kj _34qc _4b45'] span[class='_28wy']",
     "PHOTO": "div[class='_5uso _5t8z']",
     "POST_SHARE": "div[class='story_body_container'] div[class='story_body_container'] \
         div[class='_5rgt _5nk5 _5wnf _5msi'] > a",
-    "REACTIONS": "div._1w1k",
+    # "REACTIONS": "div._1w1k",
+    "REACTIONS": "div[class='_2og4 slimLike _15kj _34qc _4b45'] span[class='like_def _28wy']",
     "RCOUNTERS": "span[class='_5p-9 _5p-l']",
     "STREAM": "div[class='_53mw _4gbu']",
     "TEXT_AREA": "div.story_body_container > div[class*='_5rgt _5nk5 ']",
@@ -44,7 +48,8 @@ comments_regular_loc = {
     "SHOW_MORE": "div[class*='bkfpd7mw'] div[class*='jklb3kyz'] div[role='button'] span",
     "ANCHOR": "div[role='article']",
     "TIMETAG": "a[class*='knj5qynh']",
-    "TOOLTIP": "span[role='tooltip']"
+    "TOOLTIP": "span[role='tooltip']",
+    "REACTION_TAGS": "div[class='_6cuq']"
 }
 
 comment_loc = {

@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 from lib.config.locators import posts_page_loc as ppl
-from lib.config.strings import FACEBOOK_PAGE_POSTS, WTO_POSTS_VISIBLE
+from lib.config.strings import FACEBOOK_PAGE_POSTS, WTO_POSTS_VISIBLE, CLEAR_ITEMS
 from lib.models.page import Page
 from lib.models.post import Post
 
@@ -67,6 +67,7 @@ class ScrapePostsFromPage:
         date_threshold = date.today() - timedelta(threshold)
         last_date = date.today()
         self.driver.get(FACEBOOK_PAGE_POSTS % self.page.username)
+        self.driver.execute_script(CLEAR_ITEMS % ppl['SIGN_HEADER'])
 
         while last_date >= date_threshold:
             self._scroll_down()

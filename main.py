@@ -74,7 +74,7 @@ def main():
             del task
 
             driver.quit()  # driver reset
-            driver = chromedriver()
+            driver = chromedriver(profile=2)
 
             logging.info(msg['POST_START'], page.fullname)
             threshold = parse_threshold_config(config['threshold_date'])

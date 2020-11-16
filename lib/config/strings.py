@@ -5,7 +5,7 @@ POST_PAGE = "https://m.facebook.com/%d"
 POST_REACTIONS = "https://m.facebook.com/ufi/reaction/profile/browser/?ft_ent_identifier=%d"
 POST_REGULAR = 'https://www.facebook.com/%s/posts/%d'
 
-# expected conditions timout messages
+# expected conditions for timeout messages
 WTO_POSTS_VISIBLE = "Not all Post elements were visible"
 
 # js scripts
