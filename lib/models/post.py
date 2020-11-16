@@ -16,16 +16,17 @@ class Post:
     driver: InitVar[WebDriver]
     element: InitVar[WebElement]
     page: InitVar[Page]
+    date_dict: InitVar[dict]
     include_reactions: InitVar[bool]
     post_id: int = field(init=False)
     datetime: str = field(init=False)
 
-    def __post_init__(self, driver, element, page, include_reactions):
+    def __post_init__(self, driver, element, page, date_dict, include_reactions):
         self.pagename = page.fullname
         self.username = page.username
         self.type = self._parse_type(element)
         self.post_id = self._parse_id(element)
-        self.datetime = self._parse_datetime(element)
+        self.datetime = self._parse_datetime(self.post_id, date_dict)
         self.comments = self._parse_comments(element)
         self.shares = self._parse_shares(element)
         self.content = self._parse_content(element)
@@ -50,10 +51,12 @@ class Post:
         return int(post_id.group())
 
     @staticmethod
-    def _parse_datetime(element: WebElement) -> str:
-        data = element.get_attribute('data-store')
-        timestamp = re.search(r'(?<=\\\"publish_time\\\":).*?(?=,)', data)
-        dtime = datetime.fromtimestamp(int(timestamp.group()))
+    def _parse_datetime(post_id: int, date_dict: dict) -> str:
+        # data = element.get_attribute('data-store')
+        # timestamp = re.search(r'(?<=\\\"publish_time\\\":).*?(?=,)', data)
+        # dtime = datetime.fromtimestamp(int(timestamp.group()))
+        timestamp = date_dict[post_id]
+        dtime = datetime.fromtimestamp(timestamp)
         return dtime.strftime("%Y-%m-%d %H:%M:%S")
 
     @staticmethod

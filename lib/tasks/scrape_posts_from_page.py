@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 from lib.config.locators import posts_page_loc as ppl
-from lib.config.strings import FACEBOOK_PAGE_POSTS, WTO_POSTS_VISIBLE, CLEAR_ITEMS
+from lib.config.strings import FACEBOOK_PAGE_POSTS, WTO_POSTS_VISIBLE
 from lib.models.page import Page
 from lib.models.post import Post
 
@@ -22,6 +22,7 @@ class ScrapePostsFromPage:
     """Task for scraping posts from a single facebook page"""
     driver: WebDriver
     page: Page
+    date_dict: dict
     time: int = 0
     scraped_posts: List[Post] = field(default_factory=list)
     include_reactions: bool = True
@@ -30,12 +31,13 @@ class ScrapePostsFromPage:
     def _posts_are_visible():
         return ec.visibility_of_all_elements_located((By.CSS_SELECTOR, ppl['POSTS']))
 
-    @staticmethod
-    def _get_post_date(element: WebElement) -> date:
+    def _get_post_date(self, element: WebElement) -> date:
         data_string = element.get_attribute('data-store')
-        timestamp = re.search(
-            r'(?<=\\\"publish_time\\\":).*?(?=,)', data_string).group()
-        return datetime.fromtimestamp(int(timestamp)).date()
+        post_id = int(re.search(r'(?<=post_id\.).*?(?=:)', data_string).group())
+        # timestamp = re.search(
+        #     r'(?<=\\\"publish_time\\\":).*?(?=,)', data_string).group()
+        timestamp = self.date_dict[post_id]
+        return datetime.fromtimestamp(timestamp).date()
 
     @staticmethod
     def _is_live_now(post: WebElement) -> bool:
@@ -67,7 +69,6 @@ class ScrapePostsFromPage:
         date_threshold = date.today() - timedelta(threshold)
         last_date = date.today()
         self.driver.get(FACEBOOK_PAGE_POSTS % self.page.username)
-        self.driver.execute_script(CLEAR_ITEMS % ppl['SIGN_HEADER'])
 
         while last_date >= date_threshold:
             self._scroll_down()
@@ -82,6 +83,7 @@ class ScrapePostsFromPage:
                 driver=self.driver,
                 element=post,
                 page=self.page,
+                date_dict=self.date_dict,
                 include_reactions=self.include_reactions))
 
         self.time = time.perf_counter() - self.time

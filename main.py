@@ -11,6 +11,7 @@ from lib.models.page import Page
 from lib.tasks.scrape_comments_from_post import ScrapeCommentsFromPost
 from lib.tasks.scrape_page_data import ScrapePageData
 from lib.tasks.scrape_posts_from_page import ScrapePostsFromPage
+from lib.tasks.scrape_dates_from_posts import ScrapeDatesFromPosts
 from lib.utils.driver import chromedriver, facebook_login
 
 
@@ -74,15 +75,29 @@ def main():
             del task
 
             driver.quit()  # driver reset
-            driver = chromedriver(profile=2)
+            driver = chromedriver(incognito=True, headless=False)
 
             logging.info(msg['POST_START'], page.fullname)
             threshold = parse_threshold_config(config['threshold_date'])
-            task = ScrapePostsFromPage(driver, page)
+            task = ScrapeDatesFromPosts(driver, page)
+            task.run(threshold)
+            date_dict = task.date_dict
+            task_time = task.time
+            del task
+
+            driver.quit()  # driver reset
+            driver = chromedriver()
+
+            task = ScrapePostsFromPage(driver, page, date_dict)
             task.run(threshold)  # run post scraping task
             posts = task.scraped_posts
-            logging.info(msg['POST_END'], len(posts), page.fullname, timedelta(seconds=task.time))
+            task_time += task.time
             del task
+
+            # if len(posts) > 0:
+            #     for post in posts:
+            #         post.datetime = task.date_dict[post.post_id]
+            logging.info(msg['POST_END'], len(posts), page.fullname, timedelta(seconds=task_time))
 
             driver.quit()  # driver reset
             driver = chromedriver()
