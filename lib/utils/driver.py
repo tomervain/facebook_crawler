@@ -66,4 +66,4 @@ def facebook_login(driver: WebDriver, email: str, password: str):
         driver.find_element_by_name('login').click()
         logging.info('logged in as %s', email)
     else:
-        logging.info('already logged in, no login was issued')
+        logging.info('already logged in as %s, no login was issued', email)

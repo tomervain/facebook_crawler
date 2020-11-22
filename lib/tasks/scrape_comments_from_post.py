@@ -86,6 +86,8 @@ class ScrapeCommentsFromPost:
     def _date_estimator(self, cid_date_dict: dict) -> list:
         delta = list(map(lambda cid: abs(cid - self.post.post_id),
                          cid_date_dict.keys()))
+        # for val in cid_date_dict.values():
+        #     print(val)
         timestamp = list(map(lambda dtime: dtime.timestamp(),
                              cid_date_dict.values()))
         return polyfit(delta, timestamp, 1)
