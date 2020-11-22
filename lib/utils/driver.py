@@ -35,13 +35,14 @@ def chromedriver(profile=1, headless=True, images=False, sandbox=True, incognito
     }
 
     options = Options()
-    options.add_argument(f'user-data-dir={profile_path}')
+    if incognito:
+        options.add_argument("--incognito")
+    else:
+        options.add_argument(f'user-data-dir={profile_path}')
     if sandbox:
         options.add_argument("--no-sandbox")
     if headless:
         options.add_argument("--headless")
-    if incognito:
-        options.add_argument("--incognito")
 
     # add driver's preferences and disable verbose logging
     options.add_experimental_option("prefs", driver_prefs)

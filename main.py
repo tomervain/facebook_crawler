@@ -67,36 +67,34 @@ def main():
 
             logging.info(msg['PAGE_START'], page.fullname)
             task = ScrapePageData(driver, page.username)
-            task.run()  # run page data scraping task
+            task.run() # run page data scraping task
             logging.info(msg['PAGE_END'], page.fullname, timedelta(seconds=task.time))
             page.set_likes_followers(task.likes_followers)
             with open(pagepath / 'page_data.json', 'w', encoding='utf-8') as jfile:
                 json.dump(page.__dict__, jfile, ensure_ascii=False, indent=4)
             del task
 
-            driver.quit()  # driver reset
+            driver.quit() # driver reset
             driver = chromedriver(incognito=True)
 
             logging.info(msg['POST_START'], page.fullname)
+
             threshold = parse_threshold_config(config['threshold_date'])
             task = ScrapeDatesFromPosts(driver, page)
-            task.run(threshold)
+            task.run(threshold + 7)
             date_dict = task.date_dict
             task_time = task.time
             del task
 
-            driver.quit()  # driver reset
+            driver.quit() # driver reset
             driver = chromedriver()
 
             task = ScrapePostsFromPage(driver, page, date_dict)
-            task.run(threshold)  # run post scraping task
+            task.run(threshold) # run post scraping task
             posts = task.scraped_posts
             task_time += task.time
             del task
 
-            # if len(posts) > 0:
-            #     for post in posts:
-            #         post.datetime = task.date_dict[post.post_id]
             logging.info(msg['POST_END'], len(posts), page.fullname, timedelta(seconds=task_time))
 
             driver.quit()  # driver reset

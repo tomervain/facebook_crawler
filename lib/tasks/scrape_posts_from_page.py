@@ -34,8 +34,6 @@ class ScrapePostsFromPage:
     def _get_post_date(self, element: WebElement) -> date:
         data_string = element.get_attribute('data-store')
         post_id = int(re.search(r'(?<=post_id\.).*?(?=:)', data_string).group())
-        # timestamp = re.search(
-        #     r'(?<=\\\"publish_time\\\":).*?(?=,)', data_string).group()
         timestamp = self.date_dict[post_id]
         return datetime.fromtimestamp(timestamp).date()
 
@@ -54,7 +52,7 @@ class ScrapePostsFromPage:
             posts.pop(0)
 
         # iterate backwards, removing all posts below threshold
-        while self._get_post_date(posts[-1]) < threshold:
+        while posts and self._get_post_date(posts[-1]) < threshold:
             posts.pop(-1)
 
         return list(filter(self._is_live_now, posts))
@@ -72,7 +70,7 @@ class ScrapePostsFromPage:
 
         while last_date >= date_threshold:
             self._scroll_down()
-            wait = WebDriverWait(self.driver, 10)
+            wait = WebDriverWait(self.driver, 15)
             posts = wait.until(self._posts_are_visible(), WTO_POSTS_VISIBLE)
             last_date = self._get_post_date(posts[-1])
 

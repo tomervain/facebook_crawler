@@ -2,7 +2,6 @@ import re
 import time
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
-from typing import List
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
@@ -14,7 +13,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from lib.config.locators import posts_page_loc as ppl
 from lib.config.strings import FACEBOOK_PAGE_POSTS, WTO_POSTS_VISIBLE, CLEAR_ITEMS
 from lib.models.page import Page
-from lib.models.post import Post
 
 
 @dataclass
@@ -73,3 +71,4 @@ class ScrapeDatesFromPosts:
             self.date_dict[post_id] = post_dt
 
         self.time = time.perf_counter() - self.time
+        
